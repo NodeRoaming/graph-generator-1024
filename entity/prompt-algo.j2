@@ -1,0 +1,21 @@
+请从以下给定的课程 PPT 页面文本（text）中抽取必要的算法与设计的实体，并补充对应的类型（type）、名称（name）和简短描述（description）。
+
+【输出格式要求】
+必须严格返回一个 JSON 数组格式，不要包含任何前言、总结或 Markdown 标记。结构示例：
+[
+    {"type": "计算问题/范式", "name": "最大流问题 (Max-Flow Problem)", "description": "在给定容量限制的有向网络中求从源点 s 到汇点 t 的最大可行流量的优化问题"},
+    {"type": "数据结构/对象", "name": "残留图 (Residual Graph)", "description": "由正向剩余容量边与反向撤销流量边组成的辅助图，用于动态寻找增广路径"}
+]
+
+注意type可从以下类别中选择一种：
+算法与计算模型：用于执行计算、解决问题或描述计算过程的具体方法与模型，例如Merge Sort、DFS、Dijkstra、Ford–Fulkerson、图灵机
+数据结构与计算对象：算法操作、存储或处理的结构化对象及其组成部分，例如Adjacency List、Residual Graph、Min-Heap、Flow Network、Vertex、Edge
+计算问题与算法范式：需要求解的计算问题、通用算法设计策略或计算复杂性类别，例如Shortest Path Problem、Knapsack Problem、Divide and Conquer、Dynamic Programming、NP-Complete
+数学概念与性能指标：用于描述算法复杂度、数学性质、正确性证明或优化约束的概念，例如O(nlog⁡n)O(n\log n)O(nlogn)、Master Theorem、LP Duality、Capacity Cut、Flow Conservation
+有别的type请自行命名。
+
+没有重要的实体的话请返回空列表[]
+提取出的实体必须为名词词性，不可以为含有动词的词组！
+
+【待抽取的PPT文本】
+{{ text }}

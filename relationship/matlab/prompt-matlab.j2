@@ -1,0 +1,38 @@
+请分析以下 MATLAB 教材文本（Text）及从该文本中抽取的候选实体，识别实体之间由文本明确表达的、有意义的知识图谱关系。
+
+【可选关系类型定义】
+relationship 的前缀只能是 Associative、Causal、Generative、Structural，禁止使用其他前缀。只使用以下 6 种完整关系类型，关系方向须符合定义：
+1. Associative_用于：工具、函数、命令或方法用于完成某项明确功能、计算、数据操作或仿真。例如：plot → Associative_用于 → 二维绘图；polyder → Associative_用于 → 多项式求导；Simulink → Associative_用于 → 动态系统仿真。
+2. Associative_输入：函数、命令或过程以某实体作为输入。例如：imread → Associative_输入 → 图像文件。
+3. Causal_调用：程序、函数、回调或脚本明确调用另一函数、命令或程序；也用于文本明确描述 MATLAB 调用或连接外部语言、数据库、文件或服务的情形。例如：回调函数 → Causal_调用 → imread；MATLAB → Causal_调用 → Python。仅当文本明确提到调用、连接或展示相应代码时使用。
+4. Causal_限制：文本明确指出某条件或限制会影响某函数、方法或结果的适用性、行为或正确性。例如：输入维数要求 → Causal_限制 → 矩阵运算。
+5. Generative_产生：函数、命令、过程或仿真产生、返回或写出某实体。例如：save → Generative_产生 → MAT 文件。
+6. Structural_包含：整体、界面、模型或数据结构与组成部分之间的包含/从属关系。统一按整体到部分的方向表达；若文本表述“部分属于整体”，source_name 使用整体、target_name 使用部分。例如：MATLAB 主窗口 → Structural_包含 → 命令行窗口；App 组件 → Structural_包含 → 回调函数。
+
+【当前文本内容（Text）】
+{{ chunk_text }}
+
+【候选实体列表（必须直接使用其 name 配对）】
+{% for ent in entities %}
+- 名称: {{ ent.name }} | 类型: {{ ent.type }} | 描述: {{ ent.description }}
+{% endfor %}
+
+【抽取要求】
+1. 只识别候选实体列表中存在的实体之间、且能由当前文本直接支持的关系；不得自行补充实体或仅凭一般常识推断关系。
+2. 关系必须表达具体语义，不要将同一段中同时出现、但没有明确关联的实体建立关系。
+3. source_name 和 target_name 必须逐字使用候选实体的 name；关系方向按上方定义填写。
+4. relationship 必须是上方列出的 6 种完整关系类型之一，且其前缀只能是 Associative、Causal、Generative 或 Structural。计算、数据操作、仿真及外部交互关系应按其语义归入上述六类，不得另造关系类型；若无法归入，不要输出。
+5. 同一实体对可以有不同且明确的关系，但不要重复输出相同的关系。strength 为 0 到 10 的整数，依据文本证据明确程度给出；没有充分证据的关系不要输出。
+6. reason 用简短中文说明文本中的依据，不要加入文本未提供的信息。
+7. 每个关系对象必须且仅包含 relationship、reason、strength、source_name、target_name 五个字段。
+8. 必须严格返回 JSON 数组，不要包含任何前言、总结或 Markdown 标记。格式示例：
+[
+    {
+        "relationship": "Associative_用于",
+        "reason": "文本明确说明 plot 用于绘制二维曲线。",
+        "strength": 9,
+        "source_name": "plot",
+        "target_name": "二维曲线绘图"
+    }
+]
+如果没有任何由文本明确支持的合理关系，请返回空数组 []。

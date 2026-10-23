@@ -1,0 +1,33 @@
+请分析以下给定的文本段落（Text）以及在该文本中提取出的所有候选实体列表。请找出这些实体之间存在的图谱关系。
+
+【可选关系类型定义与示例】
+1. Associative_属性为：描述算法的复杂度、性能或数学性质。例如：Merge Sort → 时间复杂度 → O(n log n)
+2. Causal_推导为：描述通过推导、构造或算法改进得到另一方法或结论。例如：算法改进过程 → 推导为 → 新算法
+3. Causal_限制：描述输入条件、问题约束或数学性质对算法正确性、适用范围或性能的限制。例如：负权边 → 限制 → Dijkstra
+4. Generative_用于求解：描述算法用于解决特定计算问题的关系。例如：Edmonds–Karp → 用于求解 → Maximum Flow Problem
+5. Structural_包含：描述数据结构或计算对象的组成关系。例如：Flow Network → 包含 → Source
+6. Structural_属于：描述算法与设计范式之间的归属关系。例如：Merge Sort → 属于 → Divide and Conquer
+
+【当前文本内容 (Text)】
+{{ chunk_text }}
+
+【候选实体列表（请直接使用其 name 进行配对）】
+{% for ent in entities %}
+- 名称: {{ ent.name }} | 类型: {{ ent.type }} | 描述: {{ ent.description }}
+{% endfor %}
+
+【输出要求】
+1. 仔细阅读文本，找出上述实体之间具有上述列举的明确关系。
+2. 两个实体之间可以存在多于一种但不重复的关系。
+3. **LLM 只需要输出关系的类型（relationship）、判断原因（reason）、强度（strength，0-10整数），以及对应实体对的名称（source_name 和 target_name）**。
+4. 必须严格返回一个 JSON 数组格式，不要包含任何前言、总结或 Markdown 标记。格式结构示例：
+[
+    {
+        "relationship": "Generative_用于求解",
+        "reason": "简述判断理由",
+        "strength": 8,
+        "source_name": "Abacus",
+        "target_name": "Roman numerals"
+    }
+]
+如果没有任何合理关系，请返回空数组 []
